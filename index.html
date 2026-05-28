@@ -31,7 +31,7 @@ body{font-family:Arial,sans-serif;background:#ffffff;color:#222;}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 function xd(a,k){var r="";for(var i=0;i<a.length;i++){r+=String.fromCharCode(a[i]^k.charCodeAt(i%k.length));}return r;}
 var K="AstryxK3y!2026";
@@ -53,33 +53,27 @@ window.sendWA = function(nombre){
   window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(msg), "_blank");
 };
 
-async function loadProducts(){
-  const grid = document.getElementById("productsGrid");
-  try {
-    const qs = await getDocs(collection(db, "productos"));
-    if(qs.empty){ grid.innerHTML='<p style="text-align:center;padding:40px;color:#666;">No hay productos disponibles</p>'; return; }
-    const items = [];
-    qs.forEach(d => items.push({id:d.id,...d.data()}));
-    grid.innerHTML = items.map(p => `
-      <div class="product-card">
-        ${p.agotado ? '<div class="agotado">AGOTADO</div>' : ''}
-        <img src="${p.imagen}" class="product-image" onerror="this.src='https://via.placeholder.com/260x350'">
-        <div class="product-info">
-          <div class="product-name">${p.nombre}</div>
-          <div class="product-price">Gs. ${Number(p.precio).toLocaleString()}</div>
-          <button class="whatsapp-btn" onclick="sendWA('${p.nombre}')" ${p.agotado?"disabled":""}>
-            ${p.agotado ? "Producto agotado" : "Escribir al WhatsApp"}
-          </button>
-        </div>
+const grid = document.getElementById("productsGrid");
+onSnapshot(collection(db, "productos"), (qs) => {
+  if(qs.empty){ grid.innerHTML='<p style="text-align:center;padding:40px;color:#666;">No hay productos disponibles</p>'; return; }
+  const items = [];
+  qs.forEach(d => items.push({id:d.id,...d.data()}));
+  grid.innerHTML = items.map(p => `
+    <div class="product-card">
+      \${p.agotado ? '<div class="agotado">AGOTADO</div>' : ''}
+      <img src="\${p.imagen}" class="product-image" onerror="this.src='https://via.placeholder.com/260x350'">
+      <div class="product-info">
+        <div class="product-name">\${p.nombre}</div>
+        <div class="product-price">Gs. \${Number(p.precio).toLocaleString()}</div>
+        <button class="whatsapp-btn" onclick="sendWA('\${p.nombre}')" \${p.agotado?"disabled":""}>
+          \${p.agotado ? "Producto agotado" : "Escribir al WhatsApp"}
+        </button>
       </div>
-    `).join("");
-  } catch(e){
-    grid.innerHTML = '<p style="text-align:center;padding:40px;color:red;">Error al cargar productos: '+e+'</p>';
-    console.error(e);
-  }
-}
-
-loadProducts();
+    </div>
+  `).join("");
+}, (e) => {
+  grid.innerHTML = '<p style="text-align:center;padding:40px;color:red;">Error: '+e+'</p>';
+});
 </script>
 </body>
 </html>
