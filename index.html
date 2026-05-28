@@ -526,5 +526,39 @@ setTimeout(function(){
   }
 }, 8000);
 </script>
+
+<!-- Instagram flotante -->
+<a href="https://www.instagram.com/astri_xstore?igsh=c21yczJldDB3a3pm" target="_blank" rel="noopener" id="igBtn" title="Seguinos en Instagram">
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <rect width="24" height="24" rx="6" fill="url(#igGrad)"/>
+    <defs>
+      <radialGradient id="igGrad" cx="30%" cy="107%" r="150%">
+        <stop offset="0%" stop-color="#fdf497"/>
+        <stop offset="10%" stop-color="#fdf497"/>
+        <stop offset="30%" stop-color="#fd5949"/>
+        <stop offset="60%" stop-color="#d6249f"/>
+        <stop offset="90%" stop-color="#285AEB"/>
+      </radialGradient>
+    </defs>
+    <rect x="4" y="4" width="16" height="16" rx="4.5" stroke="white" stroke-width="1.5" fill="none"/>
+    <circle cx="12" cy="12" r="3.5" stroke="white" stroke-width="1.5" fill="none"/>
+    <circle cx="16.5" cy="7.5" r="1" fill="white"/>
+  </svg>
+</a>
+<style>
+#igBtn{
+  position:fixed;bottom:28px;right:28px;
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(214,36,159,0.45);
+  transition:transform 0.2s, box-shadow 0.2s;
+  z-index:999;
+}
+#igBtn:hover{
+  transform:scale(1.1);
+  box-shadow:0 6px 28px rgba(214,36,159,0.65);
+}
+#igBtn svg{width:56px;height:56px;border-radius:50%;}
+</style>
 </body>
 </html>
