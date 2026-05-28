@@ -49,31 +49,83 @@ const app = initializeApp(cfg);
 const db = getFirestore(app);
 
 window.sendWA = function(nombre){
-  const msg = "Hola, me interesa el producto: " + nombre;
-  window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(msg), "_blank");
+  window.open("https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, me interesa el producto: "+nombre),"_blank");
 };
 
+function renderCard(p){
+  var card = document.createElement("div");
+  card.className = "product-card";
+  if(p.agotado){
+    var badge = document.createElement("div");
+    badge.className = "agotado";
+    badge.textContent = "AGOTADO";
+    card.appendChild(badge);
+  }
+  var img = document.createElement("img");
+  img.className = "product-image";
+  img.src = p.imagen;
+  img.onerror = function(){ this.src="https://via.placeholder.com/260x350"; };
+  card.appendChild(img);
+  var info = document.createElement("div");
+  info.className = "product-info";
+  var name = document.createElement("div");
+  name.className = "product-name";
+  name.textContent = p.nombre;
+  var price = document.createElement("div");
+  price.className = "product-price";
+  if(p.sinPrecio){
+    price.textContent = "Consultar precio";
+    price.style.color = "#888";
+    price.style.fontSize = "1rem";
+  } else {
+    price.textContent = "Gs. " + Number(p.precio).toLocaleString("es-PY");
+  }
+  var btn = document.createElement("button");
+  btn.className = "whatsapp-btn";
+  btn.disabled = p.agotado;
+  if(p.agotado){
+    btn.textContent = "Producto agotado";
+  } else if(p.sinPrecio){
+    btn.textContent = "Consultar precio por WhatsApp";
+    btn.onclick = function(){ sendWA(p.nombre + " (consultar precio)"); };
+  } else {
+    btn.textContent = "Escribir al WhatsApp";
+    btn.onclick = function(){ sendWA(p.nombre); };
+  }
+  info.appendChild(name);
+  info.appendChild(price);
+  info.appendChild(btn);
+  card.appendChild(info);
+  return card;
+}
+
 const grid = document.getElementById("productsGrid");
-onSnapshot(collection(db, "productos"), (qs) => {
-  if(qs.empty){ grid.innerHTML='<p style="text-align:center;padding:40px;color:#666;">No hay productos disponibles</p>'; return; }
-  const items = [];
-  qs.forEach(d => items.push({id:d.id,...d.data()}));
-  grid.innerHTML = items.map(p => `
-    <div class="product-card">
-      \${p.agotado ? '<div class="agotado">AGOTADO</div>' : ''}
-      <img src="\${p.imagen}" class="product-image" onerror="this.src='https://via.placeholder.com/260x350'">
-      <div class="product-info">
-        <div class="product-name">\${p.nombre}</div>
-        <div class="product-price">Gs. \${Number(p.precio).toLocaleString()}</div>
-        <button class="whatsapp-btn" onclick="sendWA('\${p.nombre}')" \${p.agotado?"disabled":""}>
-          \${p.agotado ? "Producto agotado" : "Escribir al WhatsApp"}
-        </button>
-      </div>
-    </div>
-  `).join("");
-}, (e) => {
-  grid.innerHTML = '<p style="text-align:center;padding:40px;color:red;">Error: '+e+'</p>';
+
+var loaded = false;
+
+onSnapshot(collection(db, "productos"), function(qs){
+  loaded = true;
+  grid.innerHTML = "";
+  if(qs.empty){
+    grid.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">No hay productos disponibles</p>';
+    return;
+  }
+  qs.forEach(function(d){
+    var p = d.data();
+    p.id = d.id;
+    grid.appendChild(renderCard(p));
+  });
+}, function(e){
+  loaded = true;
+  grid.innerHTML = '<p style="text-align:center;padding:40px;color:red;">Error: '+e.message+'</p>';
 });
+
+// Solo mostrar "sin productos" después de 8 segundos si no llegaron datos
+setTimeout(function(){
+  if(!loaded){
+    grid.innerHTML = '<p style="text-align:center;padding:40px;color:#666;">Sin conexión, recargá la página</p>';
+  }
+}, 8000);
 </script>
 </body>
 </html>
