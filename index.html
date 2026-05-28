@@ -4,230 +4,82 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ASTRYX Store</title>
-
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
-body{
-font-family:Arial,sans-serif;
-background:#ffffff;
-color:#222;
-}
-
-.navbar{
-background:#fff;
-padding:20px;
-display:flex;
-justify-content:center;
-align-items:center;
-border-bottom:2px solid #25D366;
-position:sticky;
-top:0;
-z-index:100;
-}
-
-.logo{
-font-size:2rem;
-font-weight:bold;
-letter-spacing:5px;
-color:#25D366;
-}
-
-.hero{
-text-align:center;
-padding:50px 20px;
-}
-
-.hero h1{
-font-size:2.5rem;
-margin-bottom:10px;
-}
-
-.hero p{
-color:#666;
-}
-
-.products-grid{
-max-width:1300px;
-margin:auto;
-padding:20px;
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
-gap:25px;
-}
-
-.product-card{
-background:#fff;
-border-radius:20px;
-overflow:hidden;
-border:1px solid #e5e5e5;
-box-shadow:0 4px 15px rgba(0,0,0,0.06);
-transition:0.3s;
-position:relative;
-}
-
-.product-card:hover{
-transform:translateY(-5px);
-}
-
-.product-image{
-width:100%;
-height:350px;
-object-fit:cover;
-}
-
-.product-info{
-padding:18px;
-}
-
-.product-name{
-font-size:1.2rem;
-font-weight:bold;
-margin-bottom:10px;
-}
-
-.product-price{
-font-size:1.4rem;
-font-weight:bold;
-color:#25D366;
-margin-bottom:15px;
-}
-
-.whatsapp-btn{
-width:100%;
-background:#25D366;
-color:white;
-border:none;
-padding:13px;
-border-radius:12px;
-font-weight:bold;
-cursor:pointer;
-font-size:1rem;
-}
-
-.agotado{
-position:absolute;
-top:15px;
-left:15px;
-background:#ff3b30;
-color:white;
-padding:8px 14px;
-border-radius:20px;
-font-size:0.8rem;
-font-weight:bold;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:Arial,sans-serif;background:#ffffff;color:#222;}
+.navbar{background:#fff;padding:20px;display:flex;justify-content:center;align-items:center;border-bottom:2px solid #25D366;position:sticky;top:0;z-index:100;}
+.logo{font-size:2rem;font-weight:bold;letter-spacing:5px;color:#25D366;}
+.hero{text-align:center;padding:50px 20px;}
+.hero h1{font-size:2.5rem;margin-bottom:10px;}
+.hero p{color:#666;}
+.products-grid{max-width:1300px;margin:auto;padding:20px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:25px;}
+.product-card{background:#fff;border-radius:20px;overflow:hidden;border:1px solid #e5e5e5;box-shadow:0 4px 15px rgba(0,0,0,0.06);transition:0.3s;position:relative;}
+.product-card:hover{transform:translateY(-5px);}
+.product-image{width:100%;height:350px;object-fit:cover;}
+.product-info{padding:18px;}
+.product-name{font-size:1.2rem;font-weight:bold;margin-bottom:10px;}
+.product-price{font-size:1.4rem;font-weight:bold;color:#25D366;margin-bottom:15px;}
+.whatsapp-btn{width:100%;background:#25D366;color:white;border:none;padding:13px;border-radius:12px;font-weight:bold;cursor:pointer;font-size:1rem;}
+.whatsapp-btn:disabled{background:#aaa;cursor:not-allowed;}
+.agotado{position:absolute;top:15px;left:15px;background:#ff3b30;color:white;padding:8px 14px;border-radius:20px;font-size:0.8rem;font-weight:bold;}
 </style>
 </head>
-
 <body>
-
-<nav class="navbar">
-<div class="logo">ASTRYX</div>
-</nav>
-
-<div class="hero">
-<h1>ASTRYX Store</h1>
-<p>Moda urbana minimalista</p>
-</div>
-
-<div class="products-grid" id="productsGrid"></div>
+<nav class="navbar"><div class="logo">ASTRYX</div></nav>
+<div class="hero"><h1>ASTRYX Store</h1><p>Moda urbana minimalista</p></div>
+<div class="products-grid" id="productsGrid"><p style="text-align:center;padding:40px;color:#666;">Cargando productos...</p></div>
 
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-const firebaseConfig = {
-apiKey: "TU_API_KEY",
-authDomain: "TU_AUTH_DOMAIN",
-projectId: "TU_PROJECT_ID",
-storageBucket: "TU_STORAGE_BUCKET",
-messagingSenderId: "TU_MESSAGING_SENDER_ID",
-appId: "TU_APP_ID"
+function xd(a,k){var r="";for(var i=0;i<a.length;i++){r+=String.fromCharCode(a[i]^k.charCodeAt(i%k.length));}return r;}
+var K="AstryxK3y!2026";
+var cfg={
+  apiKey:xd([0,58,14,19,42,1,9,74,22,21,31,3,6,85,10,10,44,56,61,61,126,2,44,71,74,72,87,78,13,69,63,51,78,42,41,93,33,109,103],K),
+  authDomain:xd([32,0,0,0,16,0,56,71,22,83,87,29,84,82,119,17,23,92,31,17,57,86,27,64,65,85,83,70,49,93,23,29,20],K),
+  projectId:xd([32,0,0,0,16,0,56,71,22,83,87,29,84,82,119,17,23],K),
+  storageBucket:xd([32,0,0,0,16,0,56,71,22,83,87,29,84,82,119,17,23,92,31,17,57,86,27,64,65,85,65,66,46,1,21,21,28,86,42,67,9],K),
+  messagingSenderId:xd([116,75,66,64,76,78,126,2,78,22,3,2],K),
+  appId:xd([112,73,65,74,79,74,126,5,76,16,5,7,3,4,123,4,17,16,67,79,125,4,72,16,11,81,11,87,121,23,17,71,77,26,124,82,73,16,84,5,7],K)
 };
+var WA=xd([116,74,65,66,64,64,126,4,77,22,1,4,3],K);
 
-const app = initializeApp(firebaseConfig);
+const app = initializeApp(cfg);
 const db = getFirestore(app);
 
-let allProducts = [];
+window.sendWA = function(nombre){
+  const msg = "Hola, me interesa el producto: " + nombre;
+  window.open("https://wa.me/" + WA + "?text=" + encodeURIComponent(msg), "_blank");
+};
 
 async function loadProducts(){
-
-const querySnapshot = await getDocs(collection(db, "productos"));
-
-allProducts = [];
-
-querySnapshot.forEach((doc) => {
-allProducts.push({
-id: doc.id,
-...doc.data()
-});
-});
-
-displayProducts(allProducts);
-
-}
-
-function displayProducts(products){
-
-const grid = document.getElementById("productsGrid");
-
-grid.innerHTML = products.map(product => `
-
-<div class="product-card">
-
-${product.agotado ? '<div class="agotado">AGOTADO</div>' : ''}
-
-<img src="${product.imagen}" class="product-image">
-
-<div class="product-info">
-
-<div class="product-name">
-${product.nombre}
-</div>
-
-<div class="product-price">
-$${product.precio}
-</div>
-
-<button
-class="whatsapp-btn"
-onclick="sendWhatsApp('${product.nombre}')"
-${product.agotado ? 'disabled' : ''}
->
-${product.agotado ? 'Producto agotado' : 'Escribir al WhatsApp'}
-</button>
-
-</div>
-
-</div>
-
-`).join("");
-
-}
-
-window.sendWhatsApp = function(producto){
-
-const numero = "595XXXXXXXX";
-
-const mensaje = `Hola, me interesa el producto: ${producto}`;
-
-window.open(
-`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`,
-"_blank"
-);
-
+  const grid = document.getElementById("productsGrid");
+  try {
+    const qs = await getDocs(collection(db, "productos"));
+    if(qs.empty){ grid.innerHTML='<p style="text-align:center;padding:40px;color:#666;">No hay productos disponibles</p>'; return; }
+    const items = [];
+    qs.forEach(d => items.push({id:d.id,...d.data()}));
+    grid.innerHTML = items.map(p => `
+      <div class="product-card">
+        ${p.agotado ? '<div class="agotado">AGOTADO</div>' : ''}
+        <img src="${p.imagen}" class="product-image" onerror="this.src='https://via.placeholder.com/260x350'">
+        <div class="product-info">
+          <div class="product-name">${p.nombre}</div>
+          <div class="product-price">Gs. ${Number(p.precio).toLocaleString()}</div>
+          <button class="whatsapp-btn" onclick="sendWA('${p.nombre}')" ${p.agotado?"disabled":""}>
+            ${p.agotado ? "Producto agotado" : "Escribir al WhatsApp"}
+          </button>
+        </div>
+      </div>
+    `).join("");
+  } catch(e){
+    grid.innerHTML = '<p style="text-align:center;padding:40px;color:red;">Error al cargar productos: '+e+'</p>';
+    console.error(e);
+  }
 }
 
 loadProducts();
-
 </script>
-
 </body>
 </html>
