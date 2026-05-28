@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ASTRYX Store</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial,sans-serif;
+background:#ffffff;
+color:#222;
+}
+
+.navbar{
+background:#fff;
+padding:20px;
+display:flex;
+justify-content:center;
+align-items:center;
+border-bottom:2px solid #25D366;
+position:sticky;
+top:0;
+z-index:100;
+}
+
+.logo{
+font-size:2rem;
+font-weight:bold;
+letter-spacing:5px;
+color:#25D366;
+}
+
+.hero{
+text-align:center;
+padding:50px 20px;
+}
+
+.hero h1{
+font-size:2.5rem;
+margin-bottom:10px;
+}
+
+.hero p{
+color:#666;
+}
+
+.products-grid{
+max-width:1300px;
+margin:auto;
+padding:20px;
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:25px;
+}
+
+.product-card{
+background:#fff;
+border-radius:20px;
+overflow:hidden;
+border:1px solid #e5e5e5;
+box-shadow:0 4px 15px rgba(0,0,0,0.06);
+transition:0.3s;
+position:relative;
+}
+
+.product-card:hover{
+transform:translateY(-5px);
+}
+
+.product-image{
+width:100%;
+height:350px;
+object-fit:cover;
+}
+
+.product-info{
+padding:18px;
+}
+
+.product-name{
+font-size:1.2rem;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.product-price{
+font-size:1.4rem;
+font-weight:bold;
+color:#25D366;
+margin-bottom:15px;
+}
+
+.whatsapp-btn{
+width:100%;
+background:#25D366;
+color:white;
+border:none;
+padding:13px;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+font-size:1rem;
+}
+
+.agotado{
+position:absolute;
+top:15px;
+left:15px;
+background:#ff3b30;
+color:white;
+padding:8px 14px;
+border-radius:20px;
+font-size:0.8rem;
+font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<nav class="navbar">
+<div class="logo">ASTRYX</div>
+</nav>
+
+<div class="hero">
+<h1>ASTRYX Store</h1>
+<p>Moda urbana minimalista</p>
+</div>
+
+<div class="products-grid" id="productsGrid"></div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "TU_API_KEY",
+authDomain: "TU_AUTH_DOMAIN",
+projectId: "TU_PROJECT_ID",
+storageBucket: "TU_STORAGE_BUCKET",
+messagingSenderId: "TU_MESSAGING_SENDER_ID",
+appId: "TU_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let allProducts = [];
+
+async function loadProducts(){
+
+const querySnapshot = await getDocs(collection(db, "productos"));
+
+allProducts = [];
+
+querySnapshot.forEach((doc) => {
+allProducts.push({
+id: doc.id,
+...doc.data()
+});
+});
+
+displayProducts(allProducts);
+
+}
+
+function displayProducts(products){
+
+const grid = document.getElementById("productsGrid");
+
+grid.innerHTML = products.map(product => `
+
+<div class="product-card">
+
+${product.agotado ? '<div class="agotado">AGOTADO</div>' : ''}
+
+<img src="${product.imagen}" class="product-image">
+
+<div class="product-info">
+
+<div class="product-name">
+${product.nombre}
+</div>
+
+<div class="product-price">
+$${product.precio}
+</div>
+
+<button
+class="whatsapp-btn"
+onclick="sendWhatsApp('${product.nombre}')"
+${product.agotado ? 'disabled' : ''}
+>
+${product.agotado ? 'Producto agotado' : 'Escribir al WhatsApp'}
+</button>
+
+</div>
+
+</div>
+
+`).join("");
+
+}
+
+window.sendWhatsApp = function(producto){
+
+const numero = "595XXXXXXXX";
+
+const mensaje = `Hola, me interesa el producto: ${producto}`;
+
+window.open(
+`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`,
+"_blank"
+);
+
+}
+
+loadProducts();
+
+</script>
+
+</body>
+</html>
