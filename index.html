@@ -307,7 +307,10 @@ const CATEGORIAS = [
 
 function generoSymbol(g){
   if(!g) return "";
-  return g === "Mujer" ? " ♀️" : " ♂️";
+  if(g === "Mujer") return " ♀️";
+  if(g === "Hombre") return " ♂️";
+  if(g === "Unisex") return " ⚧️";
+  return "";
 }
 
 // ─── ESTADO ───
