@@ -328,8 +328,17 @@ document.addEventListener("keydown", function(e){
   if(e.key === "Escape") closeLightbox();
 });
 
-window.sendWA = function(nombre){
-  window.open("https://wa.me/"+WA+"?text="+encodeURIComponent("Hola, me interesa el producto: "+nombre),"_blank");
+window.sendWA = function(nombre, categoria, genero, imagen, sinPrecio, precio){
+  var msg = "Hola! 👋 Me interesa este producto:\n\n";
+  msg += "📦 *" + nombre + "*\n";
+  if(categoria) msg += "🏷️ " + categoria + (genero ? " · " + genero : "") + "\n";
+  if(sinPrecio){
+    msg += "💰 Quiero saber el precio\n";
+  } else if(precio){
+    msg += "💰 Gs. " + Number(precio).toLocaleString("es-PY") + "\n";
+  }
+  if(imagen) msg += "\n🖼️ " + imagen;
+  window.open("https://wa.me/"+WA+"?text="+encodeURIComponent(msg),"_blank");
 };
 
 function formatPrice(p){
@@ -388,10 +397,10 @@ function renderCard(p){
     btn.textContent = "Producto agotado";
   } else if(p.sinPrecio){
     btn.innerHTML = "💬 Consultar por WhatsApp";
-    btn.onclick = () => sendWA(p.nombre + " (consultar precio)");
+    btn.onclick = () => sendWA(p.nombre, p.categoria, p.genero, p.imagen, true, null);
   } else {
     btn.innerHTML = "💬 Escribir al WhatsApp";
-    btn.onclick = () => sendWA(p.nombre);
+    btn.onclick = () => sendWA(p.nombre, p.categoria, p.genero, p.imagen, false, p.precio);
   }
 
   info.appendChild(tag);
